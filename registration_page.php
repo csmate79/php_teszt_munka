@@ -47,7 +47,8 @@
 		$sql = "insert into regtable(username,email,password) values('$username','$email','$password')" or die();
 
 		if ($con->query($sql)===TRUE) {
-			echo ('record added!');
+			echo ('Record added! Returning to login page.');
+			header("refresh:2;url=index.php");
 		} else {
 			echo "Error:" .$sql. "<br>". $con->error;
 		}

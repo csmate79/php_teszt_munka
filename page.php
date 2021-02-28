@@ -47,9 +47,58 @@
 	<?php 
 	$url = "";
 	if (isset($_POST['submit'])) {
-		echo "<div class='container'><h3>Please login</h3></div>";
+		if ($_POST['feedurl'] != '') {
+			$url = $_POST['feedurl'];
+		}
 	}
 
+	$feeds;
+	$invalidurl = false;
+	if (@simplexml_load_file($url)) {
+		$feeds = simplexml_load_file($url);
+	} else {
+		$invalidurl = true;
+		echo "<div class='container'><h2>Invalid RSS feed URL.</h2></div>";
+	}
+
+	$i = 0;
+	if (!empty($feeds)) {
+		$site = $feeds->channel->title;
+		$sitelink = $feeds->channel->link;
+
+		echo "<h1 class='container'>".$site."</h1>";
+
+		foreach ($feeds->channel->item as $item) {
+			$title = $item->title;
+			$link = $item->link;
+			$description = $item->description;
+			$postDate = $item->pubDate;
+			$pubDate = date('D, d M Y', strtotime($postDate));
+
+			if($i >= 5) {
+				break;
+			}
+			?>
+
+			<div class="container post">
+				<hr>
+				<div class="post-head">
+					<h2><a class="feed-title" href="<?= $link ?>"><?= $title ?></a></h2>
+					<span style="font-style: italic; font-size: 11px;"><?= $pubDate ?></span>
+				</div>
+				<div class="post-content">
+					<?= implode(" ", array_slice(explode(' ',$description), 0,50)) ?>
+				</div>
+			</div>
+
+			<?php 
+			$i++;
+		}
+	} else {
+		if (!$invalidurl) {
+			echo "<h2>No item found.</h2>";
+		}
+	}
 	?>
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>

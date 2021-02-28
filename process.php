@@ -11,7 +11,7 @@ if (isset($_POST['uname'])) {
 
 	if (mysqli_num_rows($result) == 1) {
 		echo "Successful... redirecting to front page.";
-		header("refresh:2;url=index.php");
+		header("refresh:2;url=page.php");
 	} else {
 		echo "unsuccessfuly.. redirecting to front page.";
 		header("refresh:2;url=index.php");
